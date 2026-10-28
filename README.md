@@ -4,9 +4,9 @@
 
 > ⚠️ Учебный прототип. Проект не заказан салоном Kiva и не связан с ним официально. Товары, цены и отзывы условные. Реальны только публичные данные: адрес, телефон и рейтинг с Яндекс.Карт.
 
-**🔗 Живой сайт:** https://skvitby.github.io/kiva-tiles/site/
-**🔗 Ранний прототип главной:** https://skvitby.github.io/kiva-tiles/prototype/
-**🔗 Генератор постов (режим менеджера):** https://skvitby.github.io/kiva-tiles/site/?admin — откройте любой товар → «Пост для соцсетей»
+- 🔗 **Живой сайт:** https://skvitby.github.io/kiva-tiles/site/
+- 🔗 **Ранний прототип главной:** https://skvitby.github.io/kiva-tiles/prototype/
+- 🔗 **Генератор постов (режим менеджера):** https://skvitby.github.io/kiva-tiles/site/?admin — откройте любой товар → «Пост для соцсетей»
 
 ## Задача
 
