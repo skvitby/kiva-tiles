@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Пост для соцсетей — Kiva (макет)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+
+  <!--
+    МАКЕТ генератора постов (вариант А — отдельная вкладка).
+    Эта же страница встраивается во всплывающее окно варианта Б
+    с параметром ?embed=1 — тогда шапка скрыта, колонка одна.
+    Настройки стиля здесь — заглушки. В рабочей версии они будут
+    читаться из voice.md.
+  -->
+  <style>
+    :root {
+      --bg: #FFF8F1;
+      --white: #FFFFFF;
+      --soft-peach: #FFE9DE;
+      --ink: #1E1A2E;
+      --muted: #6E6880;
+      --line: #EDE3D8;
+      --coral: #FF5A4E;
+      --coral-dark: #E8443A;
+      --teal: #0FA39C;
+      --font-title: "Unbounded", system-ui, sans-serif;
+      --font-text: "Manrope", system-ui, sans-serif;
+      --radius: 20px;
+      --radius-small: 12px;
+      --shadow: 0 10px 30px rgba(30, 26, 46, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 var(--font-text);
+    }
+
+    /* ---------- Шапка ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 24px;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar__logo {
+      font: 700 20px var(--font-title);
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .topbar__note {
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--soft-peach);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px 48px;
+    }
+    .page__title {
+      font: 700 26px/1.25 var(--font-title);
+      margin-bottom: 6px;
+    }
+    .page__sub { color: var(--muted); margin-bottom: 24px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .panel__title {
+      font: 700 16px var(--font-title);
+      margin-bottom: 16px;
+    }
+
+    /* ---------- Поля формы ---------- */
+    .field { margin-bottom: 16px; }
+    .field label,
+    .field__label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      padding: 10px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-small);
+      background: var(--bg);
+    }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { outline: none; border-color: var(--teal); }
+
+    .field--error textarea { border-color: var(--coral); background: #FFF1EF; }
+    .field__hint {
+      display: none;
+      color: var(--coral-dark);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .field--error .field__hint { display: block; }
+
+    /* Площадки — переключатель из трёх кнопок */
+    .segmented {
+      display: flex;
+      gap: 6px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1.5px solid var(--line);
+    }
+    .segmented label {
+      flex: 1;
+      text-align: center;
+      margin: 0;
+      padding: 8px 6px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented label:has(input:checked) { background: var(--ink); color: var(--white); }
+
+    /* ---------- Кнопки ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font: 700 15px var(--font-text);
+      padding: 12px 22px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn--primary { background: var(--coral); color: var(--white); width: 100%; }
+    .btn--primary:hover { background: var(--coral-dark); }
+    .btn--ghost { background: var(--white); color: var(--ink); border: 1.5px solid var(--ink); }
+    .btn--ghost:disabled { opacity: .4; cursor: default; }
+
+    /* ---------- Готовый пост ---------- */
+    .result {
+      white-space: pre-wrap;
+      min-height: 220px;
+      padding: 16px;
+      background: var(--bg);
+      border: 1.5px dashed var(--line);
+      border-radius: var(--radius-small);
+      font-size: 15px;
+    }
+    .result--empty { color: var(--muted); }
+
+    .result-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .counter { font-size: 13px; color: var(--muted); }
+    .counter--over { color: var(--coral-dark); font-weight: 700; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      background: var(--ink);
+      color: var(--white);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s;
+    }
+    .toast--show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* ---------- Режим встраивания (вариант Б) ---------- */
+    body.embed { background: var(--white); }
+    body.embed .topbar,
+    body.embed .page__title,
+    body.embed .page__sub { display: none; }
+    body.embed .page { padding: 0; }
+    body.embed .layout { grid-template-columns: 1fr; gap: 16px; }
+    body.embed .panel { box-shadow: none; padding: 0; }
+    body.embed .result { min-height: 160px; }
+
+    /* ---------- Телефон ---------- */
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .topbar { padding: 12px 16px; }
+      .page { padding: 20px 16px 40px; }
+      .page__title { font-size: 21px; }
+      .panel { padding: 18px; }
+      .result-footer .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="topbar__logo" href="post-variants.html">Kiva</a>
+  <span class="topbar__note">Инструмент менеджера · виден только по ?admin</span>
+</header>
+
+<main class="page">
+  <h1 class="page__title">Пост для соцсетей</h1>
+  <p class="page__sub" id="productLine">Товар не выбран</p>
+
+  <div class="layout">
+    <!-- Левая колонка: данные товара -->
+    <form class="panel" id="postForm" novalidate>
+      <h2 class="panel__title">Данные для поста</h2>
+
+      <div class="field">
+        <label for="fName">Название товара</label>
+        <input id="fName" type="text">
+      </div>
+
+      <div class="field" id="descField">
+        <label for="fDesc">Описание *</label>
+        <textarea id="fDesc"></textarea>
+        <p class="field__hint">Добавьте описание — без него пост не получится</p>
+      </div>
+
+      <div class="field">
+        <label for="fPrice">Цена или выгода</label>
+        <input id="fPrice" type="text">
+      </div>
+
+      <div class="field">
+        <span class="field__label">Площадка</span>
+        <div class="segmented">
+          <label><input type="radio" name="platform" value="instagram" checked>Instagram</label>
+          <label><input type="radio" name="platform" value="telegram">Telegram</label>
+          <label><input type="radio" name="platform" value="vk">ВКонтакте</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fMood">Настроение</label>
+        <select id="fMood">
+          <option value="expert">Экспертное</option>
+          <option value="friendly" selected>Дружелюбное</option>
+          <option value="promo">Акционное</option>
+          <option value="inspire">Вдохновляющее</option>
+        </select>
+      </div>
+
+      <button class="btn btn--primary" type="submit">Сформировать пост</button>
+    </form>
+
+    <!-- Правая колонка: результат -->
+    <section class="panel">
+      <h2 class="panel__title">Готовый пост</h2>
+      <div class="result result--empty" id="result">Заполните поля и нажмите «Сформировать пост». Повторное нажатие даёт другой вариант текста.</div>
+      <div class="result-footer">
+        <span class="counter" id="counter"></span>
+        <button class="btn btn--ghost" id="copyBtn" type="button" disabled>Скопировать пост</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast">Пост скопирован</div>
+
+<script src="../site/products.js"></script>
+<script>
+  /* ===== НАСТРОЙКИ СТИЛЯ (заглушка — в рабочей версии из voice.md) ===== */
+  const PLATFORMS = {
+    instagram: {
+      maxLength: 600,
+      emoji: 3,
+      hashtags: 8,
+      cta: "Пишите в директ — подберём плитку под ваш интерьер"
+    },
+    telegram: {
+      maxLength: 900,
+      emoji: 2,
+      hashtags: 3,
+      cta: "Ждём в салоне: Минск, пр-т Дзержинского, 131"
+    },
+    vk: {
+      maxLength: 800,
+      emoji: 2,
+      hashtags: 5,
+      cta: "Оставьте заявку на сайте — перезвоним за 15 минут"
+    }
+  };
+
+  const HASHTAGS = ["#плитка", "#керамогранит", "#плиткаминск", "#ремонт", "#интерьер",
+                    "#ремонтквартиры", "#дизайнинтерьера", "#ванная", "#kiva", "#минск"];
+
+  const EMOJI = {
+    expert:   ["📐", "✅", "🔍"],
+    friendly: ["👋", "😊", "🏡"],
+    promo:    ["🔥", "💸", "⏰"],
+    inspire:  ["✨", "🌿", "🤍"]
+  };
+
+  // {e1}, {e2}, {e3} — места для эмодзи; лишние убираются по настройке площадки
+  const TEMPLATES = {
+    expert: [
+      "{e1} {name} — {type} {format} см от {brand} ({country}).\n\n{desc}\n\n{e2} Цена: {price}.",
+      "Разбираем коллекцию {name} {e1}\n\nФабрика: {brand}, {country}\nФормат: {format} см\n\n{desc}\n\n{e2} {price}"
+    ],
+    friendly: [
+      "Знакомьтесь: {name} {e1}\n\n{desc}\n\nИ всё это — {price} {e2}",
+      "Ищете плитку, в которую влюбитесь с первого взгляда? {e1}\n\n{name} от {brand}: {desc}\n\n{e2} {price} {e3}"
+    ],
+    promo: [
+      "{e1} Выгода на {name}!\n\n{price}\n\n{desc}\n\n{e2} Количество ограничено",
+      "{e1} Успейте купить {name}\n\n{desc}\n\n{e2} {price} {e3}"
+    ],
+    inspire: [
+      "Дом начинается с деталей {e1}\n\n{name} от {brand}: {desc}\n\n{e2} {price}",
+      "Представьте пространство, где всё дышит спокойствием {e1}\n\n{name} — {desc}\n\n{e2} {price} {e3}"
+    ]
+  };
+  /* ===================================================================== */
+
+  const params = new URLSearchParams(location.search);
+  if (params.get("embed") === "1") document.body.classList.add("embed");
+
+  const product = PRODUCTS.find(p => p.id === Number(params.get("id"))) || PRODUCTS[0];
+
+  const form = document.getElementById("postForm");
+  const fName = document.getElementById("fName");
+  const fDesc = document.getElementById("fDesc");
+  const fPrice = document.getElementById("fPrice");
+  const fMood = document.getElementById("fMood");
+  const descField = document.getElementById("descField");
+  const result = document.getElementById("result");
+  const counter = document.getElementById("counter");
+  const copyBtn = document.getElementById("copyBtn");
+  const toast = document.getElementById("toast");
+
+  // Предзаполняем поля из карточки товара
+  fName.value = product.name;
+  fDesc.value = product.description;
+  fPrice.value = product.oldPrice
+    ? `было ${product.oldPrice} BYN, стало ${product.price} BYN за м²`
+    : `${product.price} BYN за м²`;
+  document.getElementById("productLine").textContent =
+    `${product.name} · ${product.brand}, ${product.country} · ${product.format} см`;
+
+  // Счётчик шаблонов: каждое нажатие берёт следующий вариант
+  const turn = { expert: 0, friendly: 0, promo: 0, inspire: 0 };
+
+  fDesc.addEventListener("input", () => descField.classList.remove("field--error"));
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (!fDesc.value.trim()) {
+      descField.classList.add("field--error");
+      fDesc.focus();
+      return;
+    }
+
+    const mood = fMood.value;
+    const platformKey = form.platform.value;
+    const platform = PLATFORMS[platformKey];
+    const list = TEMPLATES[mood];
+    let text = list[turn[mood] % list.length];
+    turn[mood]++;
+
+    const values = {
+      name: fName.value.trim(),
+      desc: fDesc.value.trim(),
+      price: fPrice.value.trim(),
+      brand: product.brand,
+      country: product.country,
+      type: product.type.toLowerCase(),
+      format: product.format
+    };
+    for (const key in values) text = text.replaceAll(`{${key}}`, values[key]);
+
+    // Эмодзи: оставляем столько, сколько разрешено площадкой
+    EMOJI[mood].forEach((emoji, i) => {
+      text = text.replaceAll(`{e${i + 1}}`, i < platform.emoji ? emoji : "");
+    });
+    text = text.split("\n").map(line => line.replace(/ {2,}/g, " ").trim()).join("\n");
+
+    const tags = HASHTAGS.slice(0, platform.hashtags).join(" ");
+    const post = [text, platform.cta, tags].filter(Boolean).join("\n\n");
+
+    result.textContent = post;
+    result.classList.remove("result--empty");
+    copyBtn.disabled = false;
+
+    counter.textContent = `${post.length} / ${platform.maxLength} символов`;
+    counter.classList.toggle("counter--over", post.length > platform.maxLength);
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    const text = result.textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Запасной способ — для открытия файла двойным кликом и внутри окна
+      const area = document.createElement("textarea");
+      area.value = text;
+      document.body.append(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+    toast.classList.add("toast--show");
+    setTimeout(() => toast.classList.remove("toast--show"), 2500);
+  });
+</script>
+</body>
+</html>

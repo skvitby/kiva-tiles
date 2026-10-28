@@ -18,6 +18,9 @@
 
 /* ---------- 1. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---------- */
 
+// Режим менеджера: index.html?admin — показывает генератор постов (post.js)
+const IS_ADMIN = new URLSearchParams(location.search).has("admin");
+
 // Форматирует число как цену: 1234.5 → "1 234,50"
 function formatPrice(number) {
   return number.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -294,6 +297,7 @@ function openProduct(id) {
           <button class="btn btn--coral" id="addFromModal">В корзину</button>
           <button class="btn btn--outline" id="quickFromModal">Купить в 1 клик</button>
         </div>
+        ${IS_ADMIN ? `<button class="btn btn--admin" id="postFromModal">Пост для соцсетей <small>менеджер</small></button>` : ""}
 
         <div class="extras">
           <h4>С этим берут</h4>
@@ -327,6 +331,7 @@ function openProduct(id) {
     addToCart("tile", product.id, calcBoxes(product));
   });
   document.getElementById("quickFromModal").addEventListener("click", () => openQuickBuy(product));
+  if (IS_ADMIN) document.getElementById("postFromModal").addEventListener("click", () => openPost(product));
   document.querySelectorAll("[data-add-extra]").forEach(button => {
     button.addEventListener("click", () => addToCart("extra", Number(button.dataset.addExtra), 1));
   });
@@ -512,6 +517,15 @@ function closeLayers() {
   document.body.classList.remove("no-scroll");
 }
 
+// Закрывает окно. Из генератора постов — возврат в карточку товара
+function closeTopLayer() {
+  if (document.getElementById("postModal").classList.contains("is-open")) {
+    openProduct(postProduct.id);   // postProduct — товар генератора, см. post.js
+    return;
+  }
+  closeLayers();
+}
+
 // «Купить в 1 клик»
 function openQuickBuy(product) {
   document.getElementById("quickProductName").textContent = `${product.name} · ${formatPrice(product.price)} BYN/м²`;
@@ -526,11 +540,11 @@ function setupLayers() {
 
   // Закрытие: крестик, клик по затемнению, клавиша Esc
   document.addEventListener("click", event => {
-    if (event.target.closest("[data-close]")) closeLayers();
+    if (event.target.closest("[data-close]")) closeTopLayer();
   });
-  document.getElementById("overlay").addEventListener("click", closeLayers);
+  document.getElementById("overlay").addEventListener("click", closeTopLayer);
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") closeLayers();
+    if (event.key === "Escape") closeTopLayer();
   });
 }
 

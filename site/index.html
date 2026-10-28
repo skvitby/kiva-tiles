@@ -362,6 +362,67 @@
   </div>
 </div>
 
+<!-- Генератор постов для соцсетей. Только для менеджера: index.html?admin
+     Логика — post.js, стиль постов — voice.md -->
+<div class="modal modal--post" id="postModal" role="dialog" aria-modal="true" aria-label="Пост для соцсетей">
+  <button class="modal__close" data-close aria-label="Закрыть">✕</button>
+  <div class="modal__body">
+    <button class="post__back" data-close>← к товару</button>
+    <h3>Пост для соцсетей</h3>
+    <p id="postProductName" class="muted"></p>
+
+    <!-- Показывается, если voice.md не загрузился -->
+    <p class="post__error" id="postError" hidden>
+      Не удалось загрузить настройки стиля (voice.md). Генератор работает на сайте
+      или через локальный сервер (Live Server) — не при открытии файла двойным кликом.
+    </p>
+
+    <div id="postWork">
+      <form id="postForm" class="post__form" novalidate>
+        <label class="post__field">
+          <span>Название товара</span>
+          <input type="text" id="postName">
+        </label>
+        <label class="post__field" id="postDescField">
+          <span>Описание *</span>
+          <textarea id="postDesc" rows="4"></textarea>
+          <small class="post__hint">Добавьте описание — без него пост не получится</small>
+        </label>
+        <label class="post__field">
+          <span>Цена или выгода</span>
+          <input type="text" id="postPrice">
+        </label>
+        <div class="post__field">
+          <span>Площадка</span>
+          <div class="segmented">
+            <label><input type="radio" name="platform" value="instagram" checked>Instagram</label>
+            <label><input type="radio" name="platform" value="telegram">Telegram</label>
+            <label><input type="radio" name="platform" value="vk">ВКонтакте</label>
+          </div>
+        </div>
+        <label class="post__field">
+          <span>Настроение</span>
+          <select id="postMood">
+            <option value="expert">Экспертное</option>
+            <option value="friendly" selected>Дружелюбное</option>
+            <option value="promo">Акционное</option>
+            <option value="inspire">Вдохновляющее</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn--coral btn--wide">Сформировать пост</button>
+      </form>
+
+      <h4 class="post__title">Готовый пост</h4>
+      <div class="post__result is-empty" id="postResult"></div>
+      <p class="post__warning" id="postWarning"></p>
+      <div class="post__footer">
+        <span class="post__counter" id="postCounter"></span>
+        <button class="btn btn--outline btn--small" id="postCopy" type="button" disabled>Скопировать пост</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Корзина: выезжает справа -->
 <aside class="drawer" id="cartDrawer" aria-label="Корзина">
   <div class="drawer__head">
@@ -393,5 +454,6 @@
 <!-- Скрипты: сначала данные, потом логика -->
 <script src="products.js"></script>
 <script src="script.js"></script>
+<script src="post.js"></script>
 </body>
 </html>
