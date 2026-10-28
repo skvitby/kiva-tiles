@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kiva — плитка и керамогранит в Минске</title>
+  <meta name="description" content="Керамическая плитка, керамогранит и клинкер в Минске. Цены за м², наличие, бесплатный 3D-проект, доставка по Беларуси.">
+
+  <!-- Шрифты: Unbounded — заголовки, Manrope — основной текст -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Все стили сайта -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ======================================================
+     1. ВЕРХНЯЯ ПОЛОСА С АКЦИЕЙ И ТАЙМЕРОМ
+     ====================================================== -->
+<div class="promo-bar">
+  <span>🔥 −15% на мраморные коллекции. До конца акции:</span>
+  <!-- Таймер заполняет script.js -->
+  <b class="timer" data-timer>--:--:--</b>
+</div>
+
+<!-- ======================================================
+     2. ШАПКА САЙТА (прилипает к верху при прокрутке)
+     ====================================================== -->
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="#" class="logo">kiva<span>.</span></a>
+
+    <!-- Меню. На телефоне прячется и открывается кнопкой-бургером -->
+    <nav class="nav" id="nav">
+      <a href="#catalog">Каталог</a>
+      <a href="#rooms">Помещения</a>
+      <a href="#outlet" class="nav__hot">Outlet</a>
+      <a href="#how">3D-проект</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#showroom">Шоурум</a>
+    </nav>
+
+    <a href="tel:+375297780920" class="header__phone">+375 29 778-09-20</a>
+
+    <!-- Кнопка корзины. Число товаров обновляет script.js -->
+    <button class="cart-btn" data-open-cart aria-label="Открыть корзину">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.5l2.2 11h10.6L21 7.5H6.4"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>
+      <span class="cart-btn__count" data-cart-count>0</span>
+    </button>
+
+    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ======================================================
+     3. ПЕРВЫЙ ЭКРАН (HERO)
+     ====================================================== -->
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__text reveal">
+      <p class="eyebrow">Плитка · керамогранит · клинкер в Минске</p>
+      <h1>Ремонт начинается <span class="marker">с плитки,</span> которую хочется трогать</h1>
+      <p class="hero__lead">Больше 9 текстур в наличии, цены за м² на сайте, расчёт количества за 10 секунд и бесплатный 3D-проект вашей ванной.</p>
+
+      <div class="hero__buttons">
+        <a href="#catalog" class="btn btn--coral">Смотреть каталог</a>
+        <a href="#lead" class="btn btn--outline">Бесплатный 3D-проект</a>
+      </div>
+
+      <!-- Доверие: короткие факты -->
+      <ul class="hero__facts">
+        <li><b>4,3 ★</b><span>Яндекс.Карты</span></li>
+        <li><b>1 день</b><span>доставка по Минску*</span></li>
+        <li><b>0 BYN</b><span>3D-проект при покупке</span></li>
+      </ul>
+    </div>
+
+    <!-- Раскладка плиток. Плитки слегка двигаются за курсором (script.js) -->
+    <div class="hero__mosaic" id="mosaic" aria-hidden="true">
+      <div class="tile tile--big tex-marble" data-depth="10"></div>
+      <div class="tile tex-clay" data-depth="25"></div>
+      <div class="tile tex-sage" data-depth="18"></div>
+      <div class="tile tex-wood" data-depth="30"></div>
+      <div class="tile tex-terrazzo" data-depth="14"></div>
+      <div class="tile tex-sky" data-depth="22"></div>
+      <div class="sticker">−15%<small>на мрамор</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     4. БЕГУЩАЯ СТРОКА С ПРЕИМУЩЕСТВАМИ
+     Текст повторён дважды — так прокрутка выглядит бесконечной
+     ====================================================== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>✦ Наличие на складе в Минске</span><span>✦ Цены за м² без звонков</span><span>✦ Доставка и подъём на этаж</span><span>✦ Калькулятор с запасом на подрезку</span><span>✦ Шоурум на Дзержинского, 131</span>
+    <span>✦ Наличие на складе в Минске</span><span>✦ Цены за м² без звонков</span><span>✦ Доставка и подъём на этаж</span><span>✦ Калькулятор с запасом на подрезку</span><span>✦ Шоурум на Дзержинского, 131</span>
+  </div>
+</div>
+
+<!-- ======================================================
+     5. ВЫБОР ПО ПОМЕЩЕНИЮ
+     Клик по карточке включает фильтр в каталоге (data-room)
+     ====================================================== -->
+<section class="section" id="rooms">
+  <div class="container">
+    <div class="section__head reveal">
+      <h2>Что ремонтируете?</h2>
+      <p>Покажем плитку, которая подходит по влагостойкости, износу и формату.</p>
+    </div>
+
+    <div class="rooms">
+      <button class="room room--tall tex-marble reveal" data-room="bathroom"><span class="room__name">Ванная</span><span class="room__go">→</span></button>
+      <button class="room tex-terrazzo reveal" data-room="kitchen"><span class="room__name">Кухня</span><span class="room__go">→</span></button>
+      <button class="room tex-wood reveal" data-room="floor"><span class="room__name">Пол</span><span class="room__go">→</span></button>
+      <button class="room tex-concrete reveal" data-room="hallway"><span class="room__name">Прихожая</span><span class="room__go">→</span></button>
+      <button class="room tex-stone reveal" data-room="facade"><span class="room__name">Фасад и крыльцо</span><span class="room__go">→</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     6. КАТАЛОГ С ФИЛЬТРАМИ
+     Карточки товаров рисует script.js из products.js
+     ====================================================== -->
+<section class="section section--white" id="catalog">
+  <div class="container">
+    <div class="section__head reveal">
+      <h2>Каталог</h2>
+      <p>Нажмите на карточку — откроются фото в интерьере, характеристики и расчёт.</p>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filters reveal">
+      <div class="chips" id="roomChips">
+        <!-- Кнопки помещений добавляет script.js -->
+      </div>
+
+      <div class="filters__row">
+        <label class="field">
+          <span>Текстура</span>
+          <select id="textureSelect">
+            <option value="all">Все текстуры</option>
+            <!-- Варианты добавляет script.js -->
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Цена до: <b id="priceValue">150</b> BYN/м²</span>
+          <input type="range" id="priceRange" min="20" max="150" step="5" value="150">
+        </label>
+
+        <label class="field">
+          <span>Сортировка</span>
+          <select id="sortSelect">
+            <option value="popular">Сначала популярные</option>
+            <option value="cheap">Сначала дешевле</option>
+            <option value="expensive">Сначала дороже</option>
+          </select>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="stockOnly">
+          <span class="switch__slider"></span>
+          <span>Только в наличии</span>
+        </label>
+      </div>
+    </div>
+
+    <p class="catalog__count" id="catalogCount"></p>
+    <div class="grid" id="catalogGrid"></div>
+  </div>
+</section>
+
+<!-- ======================================================
+     7. OUTLET — ОСТАТКИ ПАРТИЙ
+     ====================================================== -->
+<section class="section" id="outlet">
+  <div class="container">
+    <div class="outlet reveal">
+      <div class="outlet__info">
+        <span class="badge badge--sun">Outlet</span>
+        <h2>Остатки партий до −40%</h2>
+        <p>Когда коллекция заканчивается, остатки продаём дешевле. Количество ограничено — смотрите, сколько м² осталось.</p>
+        <p class="outlet__timer">Акция на мрамор ещё <b class="timer" data-timer>--:--:--</b></p>
+      </div>
+      <div class="outlet__list" id="outletList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     8. КАК КУПИТЬ + 3D-ПРОЕКТ
+     ====================================================== -->
+<section class="section section--white" id="how">
+  <div class="container">
+    <div class="section__head reveal">
+      <h2>Как это работает</h2>
+      <p>От идеи до плитки у вас дома — четыре шага.</p>
+    </div>
+
+    <ol class="steps">
+      <li class="step reveal"><span class="step__num">1</span><h3>Выберите</h3><p>По помещению, текстуре или цене — на сайте или в шоуруме.</p></li>
+      <li class="step reveal"><span class="step__num">2</span><h3>Рассчитайте</h3><p>Калькулятор в карточке сразу добавит запас на подрезку.</p></li>
+      <li class="step step--accent reveal"><span class="step__num">3</span><h3>Увидьте в 3D</h3><p>Дизайнер бесплатно покажет плитку в вашем помещении.</p></li>
+      <li class="step reveal"><span class="step__num">4</span><h3>Получите</h3><p>Доставим по Минску и Беларуси, поднимем на этаж.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ======================================================
+     9. ОТЗЫВЫ
+     ====================================================== -->
+<section class="section" id="reviews">
+  <div class="container">
+    <div class="section__head reveal">
+      <h2>Нам доверяют ремонт</h2>
+      <p>Отзывы — примеры для прототипа. Рейтинг — с Яндекс.Карт.</p>
+    </div>
+
+    <div class="reviews">
+      <div class="rating reveal">
+        <b>4,3</b>
+        <span class="stars">★★★★☆</span>
+        <p>28 оценок на Яндекс.Картах</p>
+      </div>
+      <blockquote class="review reveal">
+        <span class="stars">★★★★★</span>
+        <p>«Посчитали плитку прямо на сайте, в шоуруме только сверили цвет. Привезли на следующий день».</p>
+        <footer>Анна · ванная 5 м²</footer>
+      </blockquote>
+      <blockquote class="review reveal">
+        <span class="stars">★★★★★</span>
+        <p>«Взяли терраццо на фартук — гости спрашивают, где нашли. Помогли подобрать затирку в тон».</p>
+        <footer>Дмитрий · кухня</footer>
+      </blockquote>
+      <blockquote class="review reveal">
+        <span class="stars">★★★★☆</span>
+        <p>«Outlet — отличная находка, сэкономили на прихожей. Минус: часть коллекции ждали две недели».</p>
+        <footer>Ольга · прихожая</footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     10. ШОУРУМ
+     ====================================================== -->
+<section class="section section--white" id="showroom">
+  <div class="container showroom">
+    <div class="showroom__info reveal">
+      <h2>Приходите потрогать</h2>
+      <p>Образцы всех коллекций, стенды с раскладками и консультант, который соберёт комплект «стена + пол + затирка».</p>
+      <dl class="showroom__list">
+        <dt>Адрес</dt><dd>Минск, пр-т Дзержинского, 131</dd>
+        <dt>Режим</dt><dd>Ежедневно 10:00–20:00 (уточнить)</dd>
+        <dt>Телефон</dt><dd><a href="tel:+375297780920">+375 29 778-09-20</a></dd>
+      </dl>
+      <div class="showroom__buttons">
+        <a href="#lead" class="btn btn--coral">Записаться на визит</a>
+        <a href="https://yandex.by/maps/?text=Минск%2C%20проспект%20Дзержинского%2C%20131" target="_blank" rel="noopener" class="btn btn--outline">Построить маршрут</a>
+      </div>
+    </div>
+    <!-- Заглушка вместо Яндекс.Карты -->
+    <div class="map reveal">
+      <div class="map__pin">kiva · Дзержинского, 131</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     11. ФОРМА ЗАЯВКИ
+     ====================================================== -->
+<section class="section" id="lead">
+  <div class="container">
+    <div class="lead reveal">
+      <div class="lead__text">
+        <h2>Подберём плитку и сделаем 3D-проект бесплатно</h2>
+        <p>Оставьте телефон — консультант перезвонит за 15 минут в рабочее время и пришлёт 3–5 вариантов в мессенджер.</p>
+        <div class="lead__messengers">
+          <a href="#" class="pill">Viber</a>
+          <a href="#" class="pill">Telegram</a>
+        </div>
+      </div>
+
+      <form class="lead__form" id="leadForm">
+        <input type="text" name="name" placeholder="Ваше имя" required>
+        <input type="tel" name="phone" placeholder="+375 (__) ___-__-__" required>
+        <select name="room">
+          <option>Ванная</option><option>Кухня</option><option>Пол</option><option>Фасад / крыльцо</option><option>Пока не знаю</option>
+        </select>
+        <button type="submit" class="btn btn--dark">Получить подборку</button>
+        <small>Нажимая кнопку, вы соглашаетесь с обработкой персональных данных.</small>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ======================================================
+     12. ПОДВАЛ
+     ====================================================== -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div>
+      <a href="#" class="logo logo--light">kiva<span>.</span></a>
+      <p>Плитка, керамогранит и клинкер в Минске.<br>пр-т Дзержинского, 131</p>
+    </div>
+    <div>
+      <h4>Покупателям</h4>
+      <a href="#catalog">Каталог</a><a href="#outlet">Outlet</a><a href="#how">3D-проект</a><a href="#">Доставка и оплата</a>
+    </div>
+    <div>
+      <h4>Контакты</h4>
+      <a href="tel:+375297780920">+375 29 778-09-20</a><a href="#">Viber</a><a href="#">Telegram</a>
+    </div>
+  </div>
+  <p class="container footer__note">© Kiva · учебный прототип для портфолио, данные условные · *условия доставки уточнить</p>
+</footer>
+
+<!-- ======================================================
+     13. НИЖНЯЯ ПАНЕЛЬ НА ТЕЛЕФОНЕ
+     ====================================================== -->
+<nav class="mobile-bar">
+  <a href="#catalog">Каталог</a>
+  <a href="tel:+375297780920" class="mobile-bar__call">Позвонить</a>
+  <button data-open-cart>Корзина · <span data-cart-count>0</span></button>
+</nav>
+
+<!-- ======================================================
+     14. ВСПЛЫВАЮЩИЕ ОКНА
+     ====================================================== -->
+
+<!-- Затемнение фона под окнами -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Карточка товара (содержимое подставляет script.js) -->
+<div class="modal" id="productModal" role="dialog" aria-modal="true" aria-label="Карточка товара">
+  <button class="modal__close" data-close aria-label="Закрыть">✕</button>
+  <div class="modal__body" id="productModalBody"></div>
+</div>
+
+<!-- Купить в 1 клик -->
+<div class="modal modal--small" id="quickModal" role="dialog" aria-modal="true" aria-label="Купить в 1 клик">
+  <button class="modal__close" data-close aria-label="Закрыть">✕</button>
+  <div class="modal__body">
+    <h3>Купить в 1 клик</h3>
+    <p id="quickProductName" class="muted"></p>
+    <form id="quickForm" class="stack">
+      <input type="tel" placeholder="+375 (__) ___-__-__" required>
+      <button type="submit" class="btn btn--coral">Жду звонка</button>
+      <small class="muted">Менеджер перезвонит, уточнит количество и доставку.</small>
+    </form>
+  </div>
+</div>
+
+<!-- Корзина: выезжает справа -->
+<aside class="drawer" id="cartDrawer" aria-label="Корзина">
+  <div class="drawer__head">
+    <h3>Корзина</h3>
+    <button class="modal__close" data-close aria-label="Закрыть">✕</button>
+  </div>
+
+  <!-- Прогресс до бесплатной доставки -->
+  <div class="delivery">
+    <p id="deliveryText"></p>
+    <div class="delivery__bar"><div id="deliveryFill"></div></div>
+  </div>
+
+  <div class="drawer__items" id="cartItems"></div>
+
+  <div class="drawer__footer">
+    <div class="drawer__total"><span>Итого</span><b id="cartTotal">0 BYN</b></div>
+    <form id="orderForm" class="stack">
+      <input type="text" placeholder="Имя" required>
+      <input type="tel" placeholder="+375 (__) ___-__-__" required>
+      <button type="submit" class="btn btn--coral btn--wide">Оформить заказ</button>
+    </form>
+  </div>
+</aside>
+
+<!-- Всплывающее уведомление внизу экрана -->
+<div class="toast" id="toast"></div>
+
+<!-- Скрипты: сначала данные, потом логика -->
+<script src="products.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

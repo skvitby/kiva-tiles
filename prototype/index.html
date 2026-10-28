@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiva — главная (прототип)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap&subset=cyrillic" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F1EA; --surface:#FFFDFA; --sand:#E9DFD1; --line:#DDD1C1;
+  --ink:#2A2522; --muted:#6F655D; --accent:#B5552B; --accent-dark:#923F1C;
+  --olive:#5F6B4E; --radius:14px; --shadow:0 6px 24px rgba(60,40,20,.08);
+  --serif:"Playfair Display",Georgia,serif; --sans:"Manrope",system-ui,sans-serif;
+  /* текстуры-заглушки вместо фото */
+  --t-marble:linear-gradient(115deg,transparent 40%,rgba(120,120,125,.25) 41%,transparent 43%),linear-gradient(60deg,transparent 60%,rgba(140,140,150,.2) 61%,transparent 62.5%),linear-gradient(160deg,#F4F2EE,#E4E1DC);
+  --t-wood:repeating-linear-gradient(90deg,#B78A5E 0 6px,#A87A50 6px 9px,#C29468 9px 16px,#9E714A 16px 18px);
+  --t-concrete:radial-gradient(circle at 20% 30%,rgba(0,0,0,.06) 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,rgba(0,0,0,.05) 0 3px,transparent 4px),linear-gradient(135deg,#B9B6B1,#9C9893);
+  --t-stone:linear-gradient(135deg,#D8C9B3,#BFAE95 60%,#CDBDA5);
+  --t-terrazzo:radial-gradient(circle at 15% 25%,#C77B55 0 4px,transparent 5px),radial-gradient(circle at 60% 70%,#7D8A6B 0 3px,transparent 4px),radial-gradient(circle at 80% 20%,#D9B48A 0 5px,transparent 6px),radial-gradient(circle at 35% 80%,#8C8C8C 0 3px,transparent 4px),#EFE8DE;
+  --t-mono-sage:linear-gradient(135deg,#9AA58A,#87927A);
+  --t-mono-clay:linear-gradient(135deg,#C9825F,#B36C4A);
+  --t-mono-ink:linear-gradient(135deg,#3B3936,#2B2927);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+img{max-width:100%}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.15}
+h2{font-size:clamp(26px,3.2vw,38px);margin-bottom:8px}
+.lead{color:var(--muted);max-width:620px}
+section{padding:64px 0;position:relative}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.link{color:var(--accent);font-weight:600}
+.link:hover{text-decoration:underline}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;border:1.5px solid transparent;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-dark)}
+.btn-ghost{border-color:var(--ink);background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:#fff}
+.btn-light{background:#fff;color:var(--ink)}
+
+/* topbar + header */
+.topbar{background:var(--ink);color:#E9E2D8;font-size:13px}
+.topbar .wrap{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.topbar span{opacity:.85}
+header{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.hdr{display:flex;align-items:center;gap:20px;height:72px}
+.logo{font-family:var(--serif);font-size:28px;letter-spacing:.12em;font-weight:600}
+.logo b{color:var(--accent)}
+.catbtn{background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;border:0;font-weight:600;cursor:pointer;display:flex;gap:8px;align-items:center}
+.search{flex:1;display:flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 16px;align-items:center;min-width:0}
+.search input{border:0;background:transparent;padding:11px 8px;width:100%;outline:none}
+.nav{display:flex;gap:22px;font-weight:500;font-size:15px}
+.nav a:hover{color:var(--accent)}
+.nav .hot{color:var(--accent);font-weight:700}
+.icons{display:flex;gap:6px;align-items:center}
+.ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;position:relative;cursor:pointer;border:0;background:transparent}
+.ic:hover{background:var(--bg)}
+.ic svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.7}
+.badge{position:absolute;top:3px;right:3px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+.phone{font-weight:700;white-space:nowrap}
+.burger{display:none}
+
+/* mega menu */
+.mega{display:none;position:absolute;left:0;right:0;top:72px;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.mega.open{display:block}
+.mega .wrap{display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;gap:24px;padding-top:28px;padding-bottom:28px}
+.mega h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.mega li{list-style:none;padding:4px 0}
+.mega li a:hover{color:var(--accent)}
+.mega-promo{border-radius:var(--radius);padding:20px;background:var(--t-terrazzo);display:flex;flex-direction:column;justify-content:end;min-height:180px}
+.mega-promo div{background:rgba(255,253,250,.92);padding:12px 14px;border-radius:10px}
+
+/* hero */
+.hero{padding:48px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+.eyebrow{display:inline-block;background:var(--sand);color:var(--accent-dark);font-weight:700;font-size:13px;padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.hero h1{font-size:clamp(34px,5vw,58px);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:italic}
+.hero p{color:var(--muted);font-size:18px;margin-bottom:28px;max-width:520px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-visual{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:10px;aspect-ratio:1/1;position:relative}
+.hero-visual div{border-radius:10px}
+.hv1{grid-column:1/3;grid-row:1/3;background:var(--t-marble)}
+.hv2{background:var(--t-mono-clay)}
+.hv3{background:var(--t-wood)}
+.hv4{background:var(--t-terrazzo)}
+.hv5{background:var(--t-concrete)}
+.hv6{background:var(--t-mono-sage)}
+.promo-tag{position:absolute;right:-8px;bottom:22%;background:var(--surface);box-shadow:var(--shadow);border-radius:var(--radius);padding:14px 18px;max-width:230px}
+.promo-tag b{font-family:var(--serif);font-size:30px;color:var(--accent);display:block;line-height:1}
+.promo-tag small{color:var(--muted)}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.trust div{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;font-size:14px}
+.trust i{font-style:normal;width:38px;height:38px;flex:none;border-radius:50%;background:var(--sand);display:grid;place-items:center;font-size:18px}
+
+/* rooms */
+.rooms{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.room{border-radius:var(--radius);aspect-ratio:4/3;position:relative;overflow:hidden;display:flex;align-items:end;padding:16px;color:#fff;transition:transform .25s}
+.room:hover{transform:translateY(-4px)}
+.room::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(30,20,15,.65))}
+.room span{position:relative;z-index:1;font-weight:700;font-size:18px}
+.room small{display:block;font-weight:500;opacity:.85;font-size:13px}
+.room.big{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+.room .ph{position:absolute;top:12px;left:12px;z-index:1;font-size:11px;background:rgba(0,0,0,.35);padding:3px 8px;border-radius:6px}
+
+/* textures */
+.textures{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.tex{flex:0 0 150px;text-align:center;font-weight:600;font-size:15px}
+.tex div{aspect-ratio:1;border-radius:50%;margin-bottom:10px;border:4px solid var(--surface);box-shadow:var(--shadow);transition:transform .25s}
+.tex:hover div{transform:scale(1.05)}
+
+/* products */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:transparent;cursor:pointer;font-weight:600}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow)}
+.card .img{aspect-ratio:1;position:relative}
+.card .lbl{position:absolute;top:10px;left:10px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--surface)}
+.lbl.sale{background:var(--accent);color:#fff}
+.lbl.new{background:var(--olive);color:#fff}
+.card .fav{position:absolute;top:8px;right:8px;background:rgba(255,253,250,.9)}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card .brand{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card h3{font-family:var(--sans);font-size:16px;font-weight:700}
+.card .meta{font-size:13px;color:var(--muted)}
+.stock{font-size:13px;color:var(--olive);font-weight:600}
+.stock.order{color:var(--muted)}
+.price{margin-top:auto;padding-top:10px;display:flex;align-items:baseline;gap:8px}
+.price b{font-size:20px}
+.price s{color:var(--muted);font-size:14px}
+.card .actions{display:flex;gap:8px;margin-top:10px}
+.card .actions .btn{padding:10px 14px;font-size:14px;flex:1}
+.hidden{display:none!important}
+
+/* calculator + 3d */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{border-radius:20px;padding:32px}
+.calc{background:var(--surface);border:1px solid var(--line)}
+.calc h3,.p3d h3{font-size:28px;margin-bottom:8px}
+.calc .lead{margin-bottom:20px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.field input,.field select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+.field input:focus,.field select:focus{outline:2px solid var(--accent);border-color:transparent}
+.result{margin-top:18px;background:var(--bg);border-radius:12px;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.result b{display:block;font-size:22px;font-family:var(--serif)}
+.result small{color:var(--muted);font-size:12px}
+.calc .btn{margin-top:16px;width:100%}
+.p3d{background:var(--ink);color:#F1EBE2;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.p3d .lead{color:#CFC6BA;margin-bottom:20px}
+.p3d ol{list-style:none;counter-reset:s;display:grid;gap:12px;margin-bottom:24px}
+.p3d li{counter-increment:s;display:flex;gap:12px;align-items:center}
+.p3d li::before{content:counter(s);width:30px;height:30px;flex:none;border-radius:50%;border:1.5px solid var(--accent);display:grid;place-items:center;font-weight:700;color:#F3B694}
+.p3d .room-3d{margin-top:auto;height:120px;border-radius:12px;position:relative;overflow:hidden;background:var(--t-terrazzo)}
+.p3d .room-3d::before{content:"";position:absolute;left:0;right:0;bottom:0;height:45%;background:var(--t-wood);transform:perspective(200px) rotateX(35deg);transform-origin:bottom}
+.p3d .btn{margin-bottom:22px;align-self:flex-start}
+
+/* projects */
+.projects{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:18px}
+.proj{border-radius:var(--radius);overflow:hidden;background:var(--surface);border:1px solid var(--line)}
+.proj .img{aspect-ratio:4/3}
+.proj:first-child .img{aspect-ratio:16/11}
+.proj .body{padding:14px 16px}
+.proj h3{font-family:var(--sans);font-size:16px;font-weight:700}
+.proj p{font-size:13px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chips span{font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+
+/* reviews */
+.reviews{display:grid;grid-template-columns:260px 1fr 1fr 1fr;gap:18px}
+.score{background:var(--accent);color:#fff;border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;justify-content:center}
+.score b{font-family:var(--serif);font-size:54px;line-height:1}
+.score .stars{letter-spacing:3px;margin:6px 0}
+.score small{opacity:.9}
+.rev{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;font-size:15px;display:flex;flex-direction:column;gap:10px}
+.rev .stars{color:var(--accent);letter-spacing:2px}
+.rev footer{margin-top:auto;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.rev .ava{width:34px;height:34px;border-radius:50%;background:var(--sand);display:grid;place-items:center;font-weight:700;color:var(--accent-dark)}
+
+/* showroom */
+.showroom{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:stretch}
+.sr-info{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:16px}
+.sr-info dl{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-size:15px}
+.sr-info dt{color:var(--muted)}
+.sr-info dd{font-weight:600}
+.sr-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+.map{border-radius:20px;min-height:340px;background:
+  linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px) 0 0/40px 40px,
+  linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px) 0 0/40px 40px,
+  linear-gradient(115deg,transparent 46%,#fff 46%,#fff 50%,transparent 50%),
+  linear-gradient(25deg,transparent 60%,#fff 60%,#fff 63%,transparent 63%),#E3DCCF;
+  position:relative;display:grid;place-items:center}
+.pin{background:var(--accent);color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);position:relative}
+.pin::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-bottom:0;border-top-color:var(--accent)}
+.map small{position:absolute;bottom:12px;left:14px;color:var(--muted);font-size:12px}
+
+/* lead form */
+.lead-form{background:var(--t-stone);border-radius:24px;padding:44px;display:grid;grid-template-columns:1fr 1.1fr;gap:32px;align-items:center}
+.lead-form h2{margin-bottom:10px}
+.lead-form p{color:#4A4038}
+.lead-form form{display:grid;gap:12px;background:rgba(255,253,250,.85);padding:24px;border-radius:16px}
+.lead-form input,.lead-form select{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.messengers{display:flex;gap:8px;flex-wrap:wrap;font-size:14px}
+.messengers a{border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;background:#fff;font-weight:600}
+.consent{font-size:12px;color:var(--muted)}
+.form-ok{display:none;font-weight:700;color:var(--olive)}
+
+/* footer */
+footer.site{background:var(--ink);color:#D9D1C5;padding:52px 0 90px;margin-top:64px;font-size:14px}
+.fgrid{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:28px}
+footer.site h4{color:#fff;font-size:14px;margin-bottom:12px;font-family:var(--sans)}
+footer.site li{list-style:none;padding:3px 0}
+footer.site a:hover{color:#fff}
+footer.site .logo{color:#fff;margin-bottom:10px}
+.fbottom{border-top:1px solid rgba(255,255,255,.12);margin-top:32px;padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;opacity:.7;font-size:12px}
+
+/* mobile sticky bar */
+.mbar{display:none;position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);z-index:30;padding:8px 12px;gap:8px}
+.mbar a{flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:10px}
+.mbar a.call{background:var(--accent);color:#fff}
+
+/* analyst notes */
+.note{display:none;position:absolute;top:12px;right:16px;z-index:15;max-width:320px;background:#FFF6C9;color:#4A3F12;border:1px solid #E6D37A;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.45;box-shadow:var(--shadow)}
+.note b{display:block;margin-bottom:2px}
+body.notes .note{display:block}
+.notes-toggle{position:fixed;right:16px;bottom:16px;z-index:40;background:#FFE680;color:#3B320B;border:0;border-radius:999px;padding:11px 16px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+
+/* responsive */
+@media (max-width:1080px){
+  .nav{display:none}
+  .products{grid-template-columns:repeat(3,1fr)}
+  .reviews{grid-template-columns:1fr 1fr}
+  .mega .wrap{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:820px){
+  .hero .wrap,.split,.showroom,.lead-form{grid-template-columns:1fr}
+  .hero-visual{max-width:440px;width:100%;margin:0 auto}
+  .promo-tag{right:0}
+  .trust{grid-template-columns:1fr 1fr}
+  .rooms{grid-template-columns:1fr 1fr}
+  .room.big{grid-column:span 2;grid-row:auto;aspect-ratio:16/9}
+  .products{grid-template-columns:1fr 1fr}
+  .projects{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .search,.phone,.catbtn span{display:none}
+  .burger{display:grid}
+  .hdr{gap:10px}
+  .hdr .logo{margin-right:auto}
+  .mbar{display:flex}
+  .notes-toggle{bottom:70px}
+  .note{position:static;margin:0 0 16px;max-width:none}
+  section{padding:44px 0}
+  .lead-form{padding:24px}
+  .panel{padding:24px}
+}
+@media (max-width:520px){
+  .reviews{grid-template-columns:1fr}
+  .fields{grid-template-columns:1fr}
+  .topbar .hide-sm{display:none}
+  .card .actions{flex-direction:column}
+  .products{gap:10px}
+  .card .body{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <span>📍 Минск, пр-т Дзержинского, 131 · шоурум</span>
+    <span class="hide-sm">Ежедневно 10:00–20:00 <em>(уточнить)</em></span>
+    <span class="hide-sm">Доставка по Беларуси · Самовывоз со склада</span>
+  </div>
+</div>
+
+<header>
+  <div class="wrap hdr">
+    <a href="#" class="logo">KIV<b>A</b></a>
+    <button class="catbtn" id="catBtn" aria-expanded="false">☰ <span>Каталог</span></button>
+    <label class="search"><span>🔍</span><input type="search" placeholder="Поиск: «мрамор 60×120», «плитка для ванной», артикул"></label>
+    <nav class="nav">
+      <a href="#" class="hot">Акции</a>
+      <a href="#">Outlet</a>
+      <a href="#projects">Проекты</a>
+      <a href="#showroom">Шоурум</a>
+    </nav>
+    <a class="phone" href="tel:+375297780920">+375 29 778-09-20</a>
+    <div class="icons">
+      <button class="ic" aria-label="Избранное"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span class="badge" id="favCount">0</span></button>
+      <button class="ic" aria-label="Корзина"><svg viewBox="0 0 24 24"><path d="M4 5h2l2 11h10l2-8H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><span class="badge" id="cartCount">0</span></button>
+      <button class="ic burger" aria-label="Меню" id="burger"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+  <div class="mega" id="mega">
+    <div class="wrap">
+      <div><h4>Помещение</h4><ul><li><a href="#">Ванная</a></li><li><a href="#">Кухня / фартук</a></li><li><a href="#">Пол</a></li><li><a href="#">Прихожая</a></li><li><a href="#">Фасад</a></li><li><a href="#">Терраса</a></li></ul></div>
+      <div><h4>Стиль и текстура</h4><ul><li><a href="#">Под мрамор</a></li><li><a href="#">Под дерево</a></li><li><a href="#">Под бетон</a></li><li><a href="#">Терраццо</a></li><li><a href="#">Сканди</a></li><li><a href="#">Лофт</a></li></ul></div>
+      <div><h4>Формат</h4><ul><li><a href="#">Мелкий (до 30×30)</a></li><li><a href="#">60×60</a></li><li><a href="#">60×120</a></li><li><a href="#">Крупный формат</a></li><li><a href="#">Мозаика</a></li></ul></div>
+      <div><h4>Ещё</h4><ul><li><a href="#">Клинкер</a></li><li><a href="#">Ламинат</a></li><li><a href="#">Клей, затирка, профили</a></li><li><a href="#">Все бренды</a></li></ul></div>
+      <a href="#" class="mega-promo"><div><b>Outlet −40%</b><br><small>Остатки партий — забрать сегодня</small></div></a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="note"><b>1. Hero</b>Одно сообщение и два CTA: путь к товару («по помещению») и путь к заявке (3D-проект). Промо — карточкой, а не слайдером: слайдеры редко досматривают.</div>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Ноябрь · −15% на коллекции под мрамор</span>
+      <h1>Плитка, в которой <em>хочется жить</em></h1>
+      <p>Керамогранит, настенная плитка, клинкер и ламинат в наличии в Минске. Поможем выбрать, рассчитаем количество и бесплатно покажем ваш интерьер в 3D.</p>
+      <div class="hero-ctas">
+        <a href="#rooms" class="btn btn-primary">Подобрать по помещению →</a>
+        <a href="#p3d" class="btn btn-ghost">Бесплатный 3D-проект</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hv1"></div><div class="hv2"></div><div class="hv3"></div>
+      <div class="hv4"></div><div class="hv5"></div><div class="hv6"></div>
+      <div class="promo-tag"><b>−15%</b>на мраморные коллекции до 30 ноября<br><small>Фото интерьера — заглушка</small></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="trust">
+      <div><i>📦</i>Наличие на складе в Минске</div>
+      <div><i>🚚</i>Доставка по Беларуси и подъём на этаж</div>
+      <div><i>🧮</i>Расчёт количества с запасом на подрезку</div>
+      <div><i>🏛</i>Шоурум: всё можно потрогать</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section id="rooms">
+  <div class="note"><b>2. Вход по помещению</b>Главный сценарий: человек делает ремонт ванной, а не ищет «керамогранит 60×120». Ванная — крупная плитка: самый частый запрос.</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><h2>Что ремонтируете?</h2><p class="lead">Покажем плитку, которая подходит по влагостойкости, износостойкости и формату.</p></div>
+      <a href="#" class="link">Весь каталог →</a>
+    </div>
+    <div class="rooms">
+      <a href="#" class="room big" style="background:var(--t-marble)"><span class="ph">фото интерьера</span><span>Ванная<small>1 240 товаров</small></span></a>
+      <a href="#" class="room" style="background:var(--t-terrazzo)"><span class="ph">фото</span><span>Кухня<small>580 товаров</small></span></a>
+      <a href="#" class="room" style="background:var(--t-wood)"><span class="ph">фото</span><span>Пол<small>910 товаров</small></span></a>
+      <a href="#" class="room" style="background:var(--t-concrete)"><span class="ph">фото</span><span>Прихожая<small>420 товаров</small></span></a>
+      <a href="#" class="room" style="background:var(--t-mono-clay)"><span class="ph">фото</span><span>Фасад и клинкер<small>160 товаров</small></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- TEXTURES -->
+<section style="padding-top:0">
+  <div class="note"><b>3. Вход по текстуре</b>Второй по частоте сценарий: «хочу под дерево». Круглые свотчи визуально отличаются от карточек помещений.</div>
+  <div class="wrap">
+    <div class="sec-head"><div><h2>Или выберите по текстуре</h2></div></div>
+    <div class="textures">
+      <a href="#" class="tex"><div style="background:var(--t-marble)"></div>Мрамор</a>
+      <a href="#" class="tex"><div style="background:var(--t-wood)"></div>Дерево</a>
+      <a href="#" class="tex"><div style="background:var(--t-concrete)"></div>Бетон</a>
+      <a href="#" class="tex"><div style="background:var(--t-stone)"></div>Камень</a>
+      <a href="#" class="tex"><div style="background:var(--t-terrazzo)"></div>Терраццо</a>
+      <a href="#" class="tex"><div style="background:var(--t-mono-sage)"></div>Моноколор</a>
+      <a href="#" class="tex"><div style="background:var(--t-mono-ink)"></div>Тёмные</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section style="background:var(--surface)">
+  <div class="note"><b>4. Товары с ценой</b>Цена за м², наличие и «в корзину» прямо на главной — разрыв конкурентов (tileberry, dtls цены не показывают). Вкладки вместо трёх отдельных блоков.</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Выбирают сейчас</h2>
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-f="hit">Хиты</button>
+        <button class="tab" data-f="new">Новинки</button>
+        <button class="tab" data-f="sale">Акции</button>
+      </div>
+    </div>
+    <div class="products" id="products"></div>
+    <p style="text-align:center;margin-top:24px"><a href="#" class="btn btn-ghost">Смотреть все</a></p>
+  </div>
+</section>
+
+<!-- CALC + 3D -->
+<section id="calc">
+  <div class="note"><b>5. Сервисы</b>Калькулятор снимает главный страх («сколько брать?») и ведёт в корзину. 3D-проект — лид-магнит для крупного чека.</div>
+  <div class="wrap split">
+    <div class="panel calc">
+      <h3>Сколько нужно плитки?</h3>
+      <p class="lead">Считаем с запасом на подрезку и бой.</p>
+      <div class="fields">
+        <div class="field"><label for="cw">Длина, м</label><input id="cw" type="number" min="0" step="0.1" value="2.5"></div>
+        <div class="field"><label for="ch">Ширина / высота, м</label><input id="ch" type="number" min="0" step="0.1" value="1.8"></div>
+        <div class="field"><label for="cf">Формат плитки</label>
+          <select id="cf"><option value="1.44">60×60 (1,44 м² в коробке)</option><option value="1.44" selected>60×120 (1,44 м² в коробке)</option><option value="1.08">30×60 (1,08 м² в коробке)</option><option value="0.5">Мозаика (0,5 м² в коробке)</option></select></div>
+        <div class="field"><label for="cl">Укладка</label>
+          <select id="cl"><option value="0.1">Прямая (+10%)</option><option value="0.15">Диагональ (+15%)</option><option value="0.12">Ёлочка (+12%)</option></select></div>
+      </div>
+      <div class="result">
+        <div><b id="rArea">0</b><small>площадь, м²</small></div>
+        <div><b id="rNeed">0</b><small>с запасом, м²</small></div>
+        <div><b id="rBox">0</b><small>коробок</small></div>
+      </div>
+      <a href="#" class="btn btn-primary">Подобрать плитку под этот расчёт</a>
+    </div>
+    <div class="panel p3d" id="p3d">
+      <h3>3D-проект ванной — бесплатно при покупке</h3>
+      <p class="lead">Увидите плитку в своём помещении до покупки.</p>
+      <ol>
+        <li>Пришлите размеры или план помещения</li>
+        <li>Дизайнер подберёт 2–3 варианта раскладки</li>
+        <li>Получите визуализацию и точную смету</li>
+      </ol>
+      <a href="#lead" class="btn btn-light">Заказать 3D-проект</a>
+      <div class="room-3d" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="background:var(--surface)">
+  <div class="note"><b>6. Проекты</b>Плитка «в жизни» и доверие. Каждый проект ведёт в использованные коллекции — дополнительный вход в каталог.</div>
+  <div class="wrap">
+    <div class="sec-head"><div><h2>Интерьеры наших клиентов</h2><p class="lead">Смотрите, как коллекции выглядят в реальных квартирах Минска.</p></div><a href="#" class="link">Все проекты →</a></div>
+    <div class="projects">
+      <a href="#" class="proj"><div class="img" style="background:var(--t-marble)"></div><div class="body"><h3>Ванная 6 м², Уручье</h3><p>Светлый мрамор + тёплое дерево на полу</p><div class="chips"><span>60×120</span><span>мрамор</span><span>дерево</span></div></div></a>
+      <a href="#" class="proj"><div class="img" style="background:var(--t-terrazzo)"></div><div class="body"><h3>Кухня-гостиная, Лошица</h3><p>Терраццо на фартуке</p><div class="chips"><span>терраццо</span><span>20×20</span></div></div></a>
+      <a href="#" class="proj"><div class="img" style="background:var(--t-concrete)"></div><div class="body"><h3>Прихожая в стиле лофт</h3><p>Бетон крупного формата</p><div class="chips"><span>бетон</span><span>лофт</span></div></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section>
+  <div class="note"><b>7. Отзывы</b>Сводный рейтинг с внешней площадки (Яндекс.Карты) — вызывает больше доверия, чем отзывы только на сайте. Тексты — заглушки.</div>
+  <div class="wrap">
+    <div class="sec-head"><h2>Отзывы покупателей</h2><a href="#" class="link">Все отзывы →</a></div>
+    <div class="reviews">
+      <div class="score"><b>4,3</b><div class="stars">★★★★☆</div><small>28 оценок на Яндекс.Картах<br>(данные на дату анализа)</small></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>«Помогли подобрать плитку для ванной и сразу посчитали, сколько брать. Привезли на следующий день».</p><footer><span class="ava">А</span>Анна · ванная · заглушка</footer></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>«В шоуруме можно было сравнить образцы рядом. Взяли керамогранит на пол и клинкер на крыльцо».</p><footer><span class="ava">Д</span>Дмитрий · дом · заглушка</footer></div>
+      <div class="rev"><div class="stars">★★★★☆</div><p>«Хороший выбор под дерево. Часть коллекции была под заказ — ждали 2 недели».</p><footer><span class="ava">О</span>Ольга · пол · заглушка</footer></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWROOM -->
+<section id="showroom" style="padding-top:0">
+  <div class="note"><b>8. Шоурум</b>Плитку часто хотят увидеть вживую: офлайн-визит — тоже конверсия. Запись на визит = ещё один лид.</div>
+  <div class="wrap showroom">
+    <div class="sr-info">
+      <h2>Приходите в шоурум</h2>
+      <p class="lead">Образцы коллекций, стенды с раскладками и консультант, который поможет собрать комплект.</p>
+      <dl>
+        <dt>Адрес</dt><dd>Минск, пр-т Дзержинского, 131</dd>
+        <dt>Режим</dt><dd>Ежедневно 10:00–20:00 (уточнить)</dd>
+        <dt>Телефон</dt><dd><a href="tel:+375297780920">+375 29 778-09-20</a></dd>
+        <dt>Парковка</dt><dd>Уточнить</dd>
+      </dl>
+      <div class="sr-btns">
+        <a href="#lead" class="btn btn-primary">Записаться на визит</a>
+        <a href="#" class="btn btn-ghost">Построить маршрут</a>
+      </div>
+    </div>
+    <div class="map"><div class="pin">KIVA · Дзержинского, 131</div><small>Здесь будет Яндекс.Карта</small></div>
+  </div>
+</section>
+
+<!-- LEAD FORM -->
+<section id="lead" style="padding-top:0">
+  <div class="note"><b>9. Форма консультации</b>Минимум полей: имя и телефон. Альтернатива — мессенджеры, в Беларуси Viber и Telegram популярнее звонка.</div>
+  <div class="wrap">
+    <div class="lead-form">
+      <div>
+        <h2>Не знаете, что выбрать?</h2>
+        <p>Расскажите о помещении — консультант подберёт 3–5 вариантов в вашем бюджете и пришлёт фото в мессенджер.</p>
+      </div>
+      <form id="leadForm">
+        <input required placeholder="Имя">
+        <input required type="tel" placeholder="+375 (__) ___-__-__">
+        <select><option>Ванная</option><option>Кухня</option><option>Пол</option><option>Фасад / терраса</option><option>Другое</option></select>
+        <button class="btn btn-primary" type="submit">Получить подборку</button>
+        <div class="form-ok" id="formOk">✓ Заявка отправлена (прототип)</div>
+        <div class="messengers">или напишите: <a href="#">Viber</a><a href="#">Telegram</a></div>
+        <p class="consent">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div><div class="logo">KIVA</div><p>Керамическая плитка, керамогранит, клинкер и ламинат в Минске.</p><p style="margin-top:10px">пр-т Дзержинского, 131<br><a href="tel:+375297780920">+375 29 778-09-20</a></p></div>
+      <div><h4>Каталог</h4><ul><li><a href="#">Для ванной</a></li><li><a href="#">Для кухни</a></li><li><a href="#">Для пола</a></li><li><a href="#">Клинкер</a></li><li><a href="#">Ламинат</a></li></ul></div>
+      <div><h4>Покупателям</h4><ul><li><a href="#">Доставка и оплата</a></li><li><a href="#">Возврат</a></li><li><a href="#">Калькулятор</a></li><li><a href="#">3D-проект</a></li><li><a href="#">FAQ</a></li></ul></div>
+      <div><h4>Компания</h4><ul><li><a href="#">О нас</a></li><li><a href="#">Проекты</a></li><li><a href="#">Отзывы</a></li><li><a href="#">Блог</a></li><li><a href="#">Контакты</a></li></ul></div>
+    </div>
+    <div class="fbottom"><span>© Kiva · учебный прототип для портфолио, данные условные</span><span>Оплата: карта · наличные · рассрочка (уточнить)</span></div>
+  </div>
+</footer>
+
+<nav class="mbar">
+  <a href="#rooms">☰<br>Каталог</a>
+  <a href="#calc">🧮<br>Расчёт</a>
+  <a href="tel:+375297780920" class="call">📞<br>Позвонить</a>
+  <a href="#">🛒<br>Корзина</a>
+</nav>
+
+<button class="notes-toggle" id="notesToggle">💡 Заметки аналитика</button>
+
+<script>
+const products=[
+  {f:"hit",brand:"Керамин",name:"Calacatta Light",meta:"60×120 · керамогранит · полированный",tex:"--t-marble",price:62.9,stock:true},
+  {f:"hit",brand:"Italon",name:"Natural Oak",meta:"20×120 · под дерево · матовый",tex:"--t-wood",price:74.5,stock:true},
+  {f:"hit",brand:"Cersanit",name:"Urban Concrete",meta:"60×60 · под бетон · матовый",tex:"--t-concrete",price:38.9,stock:true},
+  {f:"hit",brand:"Equipe",name:"Terra Clay",meta:"20×20 · настенная · глянец",tex:"--t-mono-clay",price:96.0,stock:false},
+  {f:"new",brand:"Atlas Concorde",name:"Terrazzo Soft",meta:"60×60 · терраццо · матовый",tex:"--t-terrazzo",price:88.0,stock:false},
+  {f:"new",brand:"Керамин",name:"Sage Mono",meta:"30×60 · настенная · сатин",tex:"--t-mono-sage",price:34.5,stock:true},
+  {f:"new",brand:"Stroeher",name:"Клинкер Keravette",meta:"24×11,5 · ступени и крыльцо",tex:"--t-stone",price:112.0,stock:true},
+  {f:"new",brand:"Italon",name:"Graphite Stone",meta:"120×120 · под камень",tex:"--t-mono-ink",price:129.0,stock:false},
+  {f:"sale",brand:"Керамин",name:"Marble Classic",meta:"60×120 · мрамор · лаппато",tex:"--t-marble",price:49.9,old:58.7,stock:true},
+  {f:"sale",brand:"Cersanit",name:"Wood Ash",meta:"20×60 · под дерево",tex:"--t-wood",price:29.9,old:39.9,stock:true},
+  {f:"sale",brand:"Outlet",name:"Beton Grey",meta:"60×60 · остаток 14 м²",tex:"--t-concrete",price:22.0,old:36.6,stock:true},
+  {f:"sale",brand:"Equipe",name:"Stone Beige",meta:"15×15 · фартук",tex:"--t-stone",price:69.0,old:86.0,stock:true}
+];
+const grid=document.getElementById("products");
+const fmt=n=>n.toFixed(2).replace(".",",");
+grid.innerHTML=products.map(p=>`
+  <article class="card" data-f="${p.f}">
+    <div class="img" style="background:var(${p.tex})">
+      ${p.f==="sale"?`<span class="lbl sale">−${Math.round((1-p.price/p.old)*100)}%</span>`:p.f==="new"?`<span class="lbl new">Новинка</span>`:`<span class="lbl">Хит</span>`}
+      <button class="ic fav" aria-label="В избранное">♡</button>
+    </div>
+    <div class="body">
+      <span class="brand">${p.brand}</span>
+      <h3>${p.name}</h3>
+      <span class="meta">${p.meta}</span>
+      <span class="stock ${p.stock?"":"order"}">${p.stock?"● В наличии в Минске":"○ Под заказ, 10–14 дней"}</span>
+      <div class="price"><b>${fmt(p.price)} BYN/м²</b>${p.old?`<s>${fmt(p.old)}</s>`:""}</div>
+      <div class="actions"><button class="btn btn-primary add">В корзину</button><button class="btn btn-ghost">В 1 клик</button></div>
+    </div>
+  </article>`).join("");
+
+function filter(f){document.querySelectorAll(".card").forEach(c=>c.classList.toggle("hidden",c.dataset.f!==f))}
+filter("hit");
+document.getElementById("tabs").addEventListener("click",e=>{
+  if(!e.target.dataset.f)return;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t===e.target));
+  filter(e.target.dataset.f);
+});
+
+let cart=0,fav=0;
+grid.addEventListener("click",e=>{
+  if(e.target.classList.contains("add")){cart++;document.getElementById("cartCount").textContent=cart;e.target.textContent="✓ В корзине"}
+  if(e.target.classList.contains("fav")){const on=e.target.textContent==="♡";e.target.textContent=on?"♥":"♡";e.target.style.color=on?"var(--accent)":"";fav+=on?1:-1;document.getElementById("favCount").textContent=fav}
+});
+
+function calc(){
+  const w=+document.getElementById("cw").value||0,h=+document.getElementById("ch").value||0;
+  const box=+document.getElementById("cf").value,reserve=+document.getElementById("cl").value;
+  const area=w*h,need=area*(1+reserve),boxes=box?Math.ceil(need/box):0;
+  document.getElementById("rArea").textContent=fmt(area);
+  document.getElementById("rNeed").textContent=fmt(need);
+  document.getElementById("rBox").textContent=boxes;
+}
+["cw","ch","cf","cl"].forEach(id=>document.getElementById(id).addEventListener("input",calc));
+calc();
+
+const mega=document.getElementById("mega"),catBtn=document.getElementById("catBtn");
+const toggleMega=()=>{const o=mega.classList.toggle("open");catBtn.setAttribute("aria-expanded",o)};
+catBtn.addEventListener("click",toggleMega);
+document.getElementById("burger").addEventListener("click",toggleMega);
+document.addEventListener("click",e=>{if(!mega.contains(e.target)&&!catBtn.contains(e.target)&&!document.getElementById("burger").contains(e.target))mega.classList.remove("open")});
+
+document.getElementById("leadForm").addEventListener("submit",e=>{e.preventDefault();document.getElementById("formOk").style.display="block"});
+
+const nt=document.getElementById("notesToggle");
+nt.addEventListener("click",()=>{const on=document.body.classList.toggle("notes");nt.textContent=on?"✕ Скрыть заметки":"💡 Заметки аналитика"});
+</script>
+</body>
+</html>

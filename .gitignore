@@ -1,0 +1,7 @@
+# Служебные файлы систем и редакторов
+.DS_Store
+Thumbs.db
+desktop.ini
+.obsidian/
+.vscode/
+.idea/
