@@ -73,6 +73,7 @@ h3 { font-size: 20px; }
 .container { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
 .muted { color: var(--muted); }
 .stack { display: grid; gap: 10px; }
+[hidden] { display: none !important; }   /* hidden сильнее любых display у классов */
 
 
 /* ---------- 3. КНОПКИ И ОБЩИЕ ЭЛЕМЕНТЫ ---------- */
@@ -98,9 +99,10 @@ h3 { font-size: 20px; }
 .btn--dark { background: var(--ink); color: #fff; }
 .btn--wide { width: 100%; }
 .btn--small { padding: 10px 16px; font-size: 14px; }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
 
 /* Поля ввода */
-input[type="text"], input[type="tel"], input[type="number"], select {
+input[type="text"], input[type="tel"], input[type="number"], input[type="password"], input[type="datetime-local"], select {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid var(--line);
@@ -638,7 +640,8 @@ input[type="range"] { width: 100%; accent-color: var(--coral); height: 44px; }
 }
 .post__field textarea:focus { outline: none; border-color: var(--teal); }
 .post__hint { display: none; color: var(--coral-dark); font-size: 13px; margin-top: 4px; }
-.post__field.is-error textarea { border-color: var(--coral); background: #FFF1EF; }
+.post__field.is-error textarea,
+.post__field.is-error input { border-color: var(--coral); background: #FFF1EF; }
 .post__field.is-error .post__hint { display: block; }
 
 /* Переключатель площадок */
@@ -647,22 +650,86 @@ input[type="range"] { width: 100%; accent-color: var(--coral); height: 44px; }
 .segmented input { position: absolute; opacity: 0; pointer-events: none; }
 .segmented label:has(input:checked) { background: var(--ink); color: #fff; }
 
+.post__note { margin-top: 16px; padding: 14px 16px; border-radius: 14px; background: var(--soft-mint); font-size: 15px; }
+
+/* Вкладки: Пост · Избранное · Очередь */
+.tabs { display: flex; gap: 4px; margin-top: 16px; padding: 4px; border-radius: 999px; background: var(--bg); }
+.tabs__item { flex: 1; padding: 9px 6px; border-radius: 999px; font-size: 14px; font-weight: 700; color: var(--muted); white-space: nowrap; transition: background .2s; }
+.tabs__item span { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 2px; border-radius: 999px; background: var(--line); font-size: 12px; color: var(--ink); }
+.tabs__item.is-active { background: var(--ink); color: #fff; }
+.tabs__item.is-active span { background: var(--coral); color: #fff; }
+
+/* Готовый пост — поле, которое можно править */
 .post__title { margin: 24px 0 8px; }
 .post__result {
-  white-space: pre-wrap;
+  display: block;
+  width: 100%;
   min-height: 160px;
   padding: 16px;
-  border: 2px dashed var(--line);
+  border: 2px solid var(--line);
   border-radius: var(--radius-small);
-  background: var(--bg);
+  background: var(--white);
+  font: inherit;
   font-size: 15px;
+  color: inherit;
+  resize: vertical;
 }
-.post__result.is-empty { color: var(--muted); }
+.post__result:placeholder-shown { border-style: dashed; background: var(--bg); }   /* пока пусто */
+.post__result:focus { outline: none; border-color: var(--teal); }
 .post__warning { color: var(--coral-dark); font-size: 13px; font-weight: 600; margin-top: 6px; }
 .post__warning:empty { display: none; }
-.post__footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-.post__counter { font-size: 13px; color: var(--muted); }
+.post__counter { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.post__counter:empty { display: none; }
 .post__counter.is-over { color: var(--coral-dark); font-weight: 800; }
+.post__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* Отложенная публикация */
+.schedule { display: grid; gap: 10px; margin-top: 12px; padding: 16px; border-radius: 14px; background: var(--soft-sun); }
+.schedule .btn { justify-self: start; }
+
+/* Настройки Telegram */
+.tg { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+.tg summary { cursor: pointer; font-weight: 700; }
+.tg[open] summary { margin-bottom: 14px; }
+.tg .post__field { margin-bottom: 12px; }
+.tg__secret { display: flex; gap: 8px; }
+.tg__show { padding: 0 12px; font-size: 13px; font-weight: 700; color: var(--muted); text-decoration: underline; }
+.tg__forget { font-size: 13px; color: var(--muted); text-decoration: underline; }
+.tg__status { margin: 10px 0 6px; font-size: 14px; font-weight: 600; }
+.tg__status:empty { display: none; }
+.tg__status.is-ok { color: #087570; }
+.tg__status.is-error { color: var(--coral-dark); }
+
+/* Списки Избранного и очереди */
+.saved { display: grid; gap: 12px; margin-top: 18px; }
+.saved__item { padding: 14px 16px; border: 2px solid var(--line); border-radius: var(--radius-small); }
+.saved__meta { font-size: 13px; font-weight: 700; color: var(--muted); }
+.saved__text {
+  margin-top: 6px; font-size: 14px; white-space: pre-line;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;   /* только первые 2 строки */
+}
+.saved__status { margin-top: 8px; font-size: 13px; font-weight: 700; }
+.saved__status.is-waiting, .saved__status.is-sending { color: var(--muted); }
+.saved__status.is-missed { color: #9A6B00; }
+.saved__status.is-error { color: var(--coral-dark); }
+.saved__status.is-published { color: #087570; }
+.saved__buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+.saved__buttons button { font-size: 14px; font-weight: 700; text-decoration: underline; }
+.saved__buttons button:hover { color: var(--coral-dark); }
+.saved__empty { padding: 32px 16px; text-align: center; color: var(--muted); }
+
+/* Плашка «Не опубликовано вовремя» — под шапкой справа */
+.queue-alert {
+  position: fixed; top: 88px; right: 16px; z-index: 80;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  max-width: calc(100% - 32px);
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--soft-sun);
+  border: 2px solid var(--sun);
+  box-shadow: var(--shadow-big);
+  font-weight: 700;
+}
 
 /* Корзина-шторка справа */
 .drawer {
@@ -885,7 +952,10 @@ input[type="range"] { width: 100%; accent-color: var(--coral); height: 44px; }
   .modal--small { width: 100%; }
   .modal--post { width: 100%; }
   .modal--post .modal__body { padding: 20px 16px 28px; }
-  .post__footer .btn { width: 100%; }
+  .post__actions .btn { flex: 1 1 calc(50% - 4px); }   /* кнопки — по две в строке */
+  .tabs__item { font-size: 13px; }
+  .queue-alert { left: 16px; right: 16px; top: 84px; }
+  .header__posts { padding: 8px 12px; font-size: 13px; }
   .product { grid-template-columns: 1fr; }
   .product__gallery { padding: 16px; }
   .product__info { padding: 20px 16px 28px; }

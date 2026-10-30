@@ -44,6 +44,9 @@
 
     <a href="tel:+375297780920" class="header__phone">+375 29 778-09-20</a>
 
+    <!-- Избранное и очередь постов. Видна только менеджеру: index.html?admin -->
+    <button class="btn btn--admin btn--small header__posts" id="myPosts" type="button" hidden>Мои посты</button>
+
     <!-- Кнопка корзины. Число товаров обновляет script.js -->
     <button class="cart-btn" data-open-cart aria-label="Открыть корзину">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.5l2.2 11h10.6L21 7.5H6.4"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>
@@ -363,21 +366,36 @@
 </div>
 
 <!-- Генератор постов для соцсетей. Только для менеджера: index.html?admin
-     Логика — post.js, стиль постов — voice.md -->
+     Логика — post.js (пост, Избранное) и telegram.js (публикация, очередь),
+     стиль постов — voice.md -->
 <div class="modal modal--post" id="postModal" role="dialog" aria-modal="true" aria-label="Пост для соцсетей">
   <button class="modal__close" data-close aria-label="Закрыть">✕</button>
   <div class="modal__body">
-    <button class="post__back" data-close>← к товару</button>
+    <button class="post__back" id="postBack" data-close>← к товару</button>
     <h3>Пост для соцсетей</h3>
     <p id="postProductName" class="muted"></p>
 
-    <!-- Показывается, если voice.md не загрузился -->
-    <p class="post__error" id="postError" hidden>
-      Не удалось загрузить настройки стиля (voice.md). Генератор работает на сайте
-      или через локальный сервер (Live Server) — не при открытии файла двойным кликом.
-    </p>
+    <!-- Вкладки. Число в скобках обновляют post.js и telegram.js -->
+    <div class="tabs" role="tablist">
+      <button class="tabs__item is-active" data-tab="postTabPost" role="tab">Пост</button>
+      <button class="tabs__item" data-tab="postTabFav" role="tab">Избранное <span data-fav-count>0</span></button>
+      <button class="tabs__item" data-tab="postTabQueue" role="tab">Очередь <span data-queue-count>0</span></button>
+    </div>
 
-    <div id="postWork">
+    <!-- ВКЛАДКА «ПОСТ» -->
+    <div class="post__tab" id="postTabPost">
+      <!-- Показывается, если voice.md не загрузился -->
+      <p class="post__error" id="postError" hidden>
+        Не удалось загрузить настройки стиля (voice.md). Генератор работает на сайте
+        или через локальный сервер (Live Server) — не при открытии файла двойным кликом.
+      </p>
+
+      <!-- Показывается, если окно открыто кнопкой «Мои посты», а не из товара -->
+      <p class="post__note" id="postNoProduct" hidden>
+        Чтобы сформировать новый пост, откройте товар в каталоге.
+        Здесь можно править и публиковать посты из Избранного.
+      </p>
+
       <form id="postForm" class="post__form" novalidate>
         <label class="post__field">
           <span>Название товара</span>
@@ -413,14 +431,75 @@
       </form>
 
       <h4 class="post__title">Готовый пост</h4>
-      <div class="post__result is-empty" id="postResult"></div>
+      <!-- Текст можно править: счётчик и предупреждения пересчитываются при вводе -->
+      <textarea class="post__result" id="postResult" rows="7"
+        placeholder="Заполните поля и нажмите «Сформировать пост». Повторное нажатие даёт другой вариант текста. Готовый текст можно править прямо здесь."></textarea>
       <p class="post__warning" id="postWarning"></p>
-      <div class="post__footer">
-        <span class="post__counter" id="postCounter"></span>
-        <button class="btn btn--outline btn--small" id="postCopy" type="button" disabled>Скопировать пост</button>
+      <p class="post__counter" id="postCounter"></p>
+
+      <div class="post__actions">
+        <button class="btn btn--outline btn--small" id="postCopy" type="button" disabled>Скопировать</button>
+        <button class="btn btn--outline btn--small" id="postFav" type="button" disabled>☆ В избранное</button>
+        <button class="btn btn--dark btn--small" id="tgPublish" type="button" disabled>Опубликовать в Telegram</button>
+        <button class="btn btn--outline btn--small" id="tgScheduleToggle" type="button" disabled aria-expanded="false">Запланировать</button>
       </div>
+
+      <!-- Отложенная публикация -->
+      <div class="schedule" id="tgSchedule" hidden>
+        <label class="post__field" id="tgScheduleField">
+          <span>Дата и время публикации</span>
+          <input type="datetime-local" id="tgScheduleAt">
+          <small class="post__hint">Выберите время хотя бы на минуту позже текущего</small>
+        </label>
+        <button class="btn btn--coral btn--small" id="tgScheduleAdd" type="button">В очередь</button>
+        <small class="muted">Пост уйдёт, только если сайт открыт с ?admin в это время. Время — по часам компьютера.</small>
+      </div>
+
+      <!-- Подсказки и ошибки публикации -->
+      <p class="post__warning" id="tgHint"></p>
+
+      <!-- Настройки Telegram: хранятся только в этом браузере -->
+      <details class="tg" id="tgSettings">
+        <summary>Настройки Telegram</summary>
+        <div class="post__field">
+          <span>Токен бота (из @BotFather)</span>
+          <div class="tg__secret">
+            <input type="password" id="tgToken" autocomplete="off" aria-label="Токен бота" placeholder="1234567890:AAH…">
+            <button class="tg__show" id="tgShowToken" type="button">показать</button>
+          </div>
+        </div>
+        <label class="post__field">
+          <span>Канал</span>
+          <input type="text" id="tgChat" placeholder="@kiva_test или -100…">
+        </label>
+        <div class="post__actions">
+          <button class="btn btn--outline btn--small" id="tgCheck" type="button">Проверить подключение</button>
+          <button class="btn btn--dark btn--small" id="tgSave" type="button">Сохранить</button>
+          <button class="tg__forget" id="tgForget" type="button">Забыть токен</button>
+        </div>
+        <p class="tg__status" id="tgStatus"></p>
+        <small class="muted">Токен хранится только в этом браузере. Не сохраняйте его на чужом компьютере.
+          Как получить токен и подключить канал — в README.</small>
+      </details>
+    </div>
+
+    <!-- ВКЛАДКА «ИЗБРАННОЕ» — список рисует post.js -->
+    <div class="post__tab" id="postTabFav" hidden>
+      <div class="saved" id="favList"></div>
+    </div>
+
+    <!-- ВКЛАДКА «ОЧЕРЕДЬ» — список рисует telegram.js -->
+    <div class="post__tab" id="postTabQueue" hidden>
+      <div class="saved" id="queueList"></div>
     </div>
   </div>
+</div>
+
+<!-- Плашка «Не опубликовано вовремя» (только ?admin, telegram.js) -->
+<div class="queue-alert" id="queueAlert" hidden>
+  <span>Не опубликовано вовремя: <b id="queueAlertCount">0</b></span>
+  <button class="btn btn--coral btn--small" id="queueAlertPublish" type="button">Опубликовать сейчас</button>
+  <button class="btn btn--outline btn--small" id="queueAlertOpen" type="button">Открыть очередь</button>
 </div>
 
 <!-- Корзина: выезжает справа -->
@@ -455,5 +534,6 @@
 <script src="products.js"></script>
 <script src="script.js"></script>
 <script src="post.js"></script>
+<script src="telegram.js"></script>
 </body>
 </html>

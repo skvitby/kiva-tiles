@@ -518,8 +518,9 @@ function closeLayers() {
 }
 
 // Закрывает окно. Из генератора постов — возврат в карточку товара
+// (если генератор открыт кнопкой «Мои посты», товара нет — просто закрываем)
 function closeTopLayer() {
-  if (document.getElementById("postModal").classList.contains("is-open")) {
+  if (document.getElementById("postModal").classList.contains("is-open") && postProduct) {
     openProduct(postProduct.id);   // postProduct — товар генератора, см. post.js
     return;
   }
@@ -546,6 +547,13 @@ function setupLayers() {
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closeTopLayer();
   });
+
+  // Кнопка «Мои посты» в шапке — только для менеджера: Избранное и очередь (post.js)
+  if (IS_ADMIN) {
+    const myPosts = document.getElementById("myPosts");
+    myPosts.hidden = false;
+    myPosts.addEventListener("click", () => openMyPosts("postTabQueue"));
+  }
 }
 
 
