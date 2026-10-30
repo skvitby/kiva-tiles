@@ -5,3 +5,6 @@ desktop.ini
 .obsidian/
 .vscode/
 .idea/
+
+# Секреты: токены и пароли — никогда не в репозиторий
+.env
