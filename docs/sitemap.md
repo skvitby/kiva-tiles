@@ -5,7 +5,7 @@ type: sitemap
 status: draft
 created: 2026-10-28
 tags: [portfolio, ia, sitemap, ecommerce, kiva]
-prototype: prototype/index.html
+prototype: ../prototype/index.html
 ---
 
 # Kiva — карта сайта

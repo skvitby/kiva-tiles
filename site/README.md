@@ -64,7 +64,7 @@ tags: [portfolio, prototype, html, css, js, kiva]
 - VS Code → расширение Live Server → правый клик по `index.html` → Open with Live Server, затем добавьте `?admin` к адресу;
 - или в папке `site` выполните `python -m http.server` и откройте `http://localhost:8000/?admin`.
 
-Макеты, на которых выбирали вид генератора, — `../prototype/post-variants.html`. ТЗ доработок — `../gen_post_v3.md`.
+Макеты, на которых выбирали вид генератора, — `../prototype/post-variants.html`. ТЗ доработок — `../docs/gen_post/gen_post_v3.md`.
 
 ## Публикация в Telegram
 
