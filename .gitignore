@@ -6,6 +6,9 @@ desktop.ini
 .vscode/
 .idea/
 
+# Черновые снимки и логи Playwright MCP
+.playwright-mcp/
+
 # Секреты: токены и пароли — никогда не в репозиторий
 .env
 
